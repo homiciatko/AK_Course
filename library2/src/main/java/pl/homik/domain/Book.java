@@ -1,6 +1,6 @@
 package pl.homik.domain;
 
-public class Book {
+public class Book implements Comparable<Book>{
 	
 	private int id;
 	private String title;
@@ -12,6 +12,11 @@ public class Book {
 		this.title = title;
 		this.author = author;
 		this.pages = pages;
+	}
+	
+	public Book(int id, String title, String author, int pages) {
+		this(title, author, pages);
+		this.id = id;
 	}
 	
 	public int getId() {
@@ -39,7 +44,11 @@ public class Book {
 	
 	@Override
 	public String toString() {
-		return "Book nr " +id+ " title=" + title + " author=" + author + " pages=" + pages + "]";
+		return "title=" + title + " author=" + author + " pages=" + pages + "]";
+	}
+
+	public int compareTo(Book book) {
+		return 0;
 	}
 	
 	

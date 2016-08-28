@@ -50,31 +50,77 @@ public class BookDaoSqlite implements BookDao {
 				+ ");";
 		executeUpdateQuery(sql);
 	}
+	
+	public List<Book> findBook(String titleOrAuthor) {
+		String sql = "SELECT * FROM Books "
+				+ "WHERE title LIKE '%" +titleOrAuthor+ "%' "
+						+ "OR author LIKE '%" +titleOrAuthor+ "%'";
+		String title, author;
+		int pages, id;
+		List<Book> foundedBooks = new ArrayList<Book>();
+		try {
+			ResultSet result = statement.executeQuery(sql);
+			while ( result.next()){
+				id = result.getInt("id");
+				title = result.getString("title");
+				author = result.getString("author");
+				pages = result.getInt("pages");
+				foundedBooks.add(new Book(id, title,author,pages));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return foundedBooks;
+	}
+	
+	public List<Book> findBook(String title, String author) {
+		String sql = "SELECT * FROM Books "
+				+ "WHERE title LIKE '%" +author+ "%' "
+						+ "AND author LIKE '%" +title+ "%'";
+		String foundedTitle, foundedAuthor;
+		int pages, id;
+		List<Book> foundedBooks = new ArrayList<Book>();
+		try {
+			ResultSet result = statement.executeQuery(sql);
+			while ( result.next()){
+				id = result.getInt("id");
+				foundedTitle = result.getString("title");
+				foundedAuthor = result.getString("author");
+				pages = result.getInt("pages");
+				foundedBooks.add(new Book(id, foundedTitle,foundedAuthor,pages));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return foundedBooks;
+	}
+	
+	
 
-	public void removeBook(Book book) {
-		int id = book.getId();
+	public void removeBook(Integer id) {
+//		int id = book.getId();
 		String sql = "DELETE FROM Books WHERE id = " + id;
 		executeUpdateQuery(sql);
 	}
 
-	public List<Book> listBooks() {
+	public List<Book> allBooks() {
 		List<Book> books = new ArrayList<Book>();
 		try {
 			ResultSet result = statement.executeQuery("SELECT * FROM Books");
 			String title, author;
-			int pages;
+			int pages, id;
 			/*
 			 * Pozytywne Myślenie, 20
 			 * Programowanie w Javie, 200
 			 */
 			while ( result.next()){
+				id = result.getInt("id");
 				title = result.getString("title");
 				author = result.getString("author");
 				pages = result.getInt("pages");
-				books.add(new Book(title,author,pages));
+				books.add(new Book(id, title,author,pages));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -1,10 +1,14 @@
 package pl.homik.library2;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import pl.homik.dao.BookDao;
 import pl.homik.dao.BookDaoSqlite;
 import pl.homik.domain.Book;
+import pl.homik.utilities.ListUtilities;
 
 public class Main {
 	
@@ -16,8 +20,11 @@ public class Main {
 		
 		Scanner scanner = new Scanner(System.in);
 		int number = 0;
-		int pages;
-		String author, title;
+		int pages, id = 0;
+		String author, title, titleOrAuthor;
+		int counter;
+		Map<Integer, Book> booksMap = new HashMap<Integer, Book>();
+		List<Book> books;
 		
 		do{
 			
@@ -37,16 +44,37 @@ public class Main {
 			pages = scanner.nextInt();
 			
 			bookDao.addBook(new Book(title, author, pages));
+			System.out.println("dodano ksiazke");
 			break;
 			
 		case 2:
 //			TO DO
-			System.out.println("trzeba napisac usuwanie książek");
+			System.out.println("Podaj tytuł ksiązki lub autora ksiazki");
+			titleOrAuthor = scanner.next();
+			books = bookDao.findBook(titleOrAuthor);
+			ListUtilities.displayListByNumbers(books);
+		
+			if (books.size() > 1) {
+				System.out.println("podaj numer ksiązki, który chcesz usunąć");
+				id = scanner.nextInt();
+			}
+			else if (books.size() ==1) {
+				id = books.get(0).getId();
+				System.out.println("wybrales id: " + id);
+			}
+			else {
+				System.out.println("Nie znalazlem takiej ksiązki\n");
+				break;
+			}
+			System.out.println("usuwam wybraną ksiązkę:"
+					+ "");
+			bookDao.removeBook(id);
+			id = -1;
 			break;
 			
 		case 3:
-			for (Book book : bookDao.listBooks())
-				System.out.println(book);
+			ListUtilities.displayListByNumbers(bookDao.allBooks());
+			System.out.println();
 			break;
 
 		default:
